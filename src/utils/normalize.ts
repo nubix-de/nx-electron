@@ -1,4 +1,4 @@
-import { Path, normalize } from '@angular-devkit/core';
+import { normalizePath } from '@nrwl/devkit';
 import { resolve, dirname, relative, basename } from 'path';
 import { BuildBuilderOptions } from './types';
 import { Configuration as ElectronPackagerOptions } from 'electron-builder';
@@ -36,7 +36,7 @@ export function normalizePackgingOptions<T extends ElectronPackagerOptions>(opti
 function normalizeAssets(assets: any[], root: string, sourceRoot: string): any[] {
   return assets.map(asset => {
     if (typeof asset === 'string') {
-      const assetPath = normalize(asset);
+      const assetPath = normalizePath(asset);
       const resolvedAssetPath = resolve(root, assetPath);
       const resolvedSourceRoot = resolve(root, sourceRoot);
 
@@ -64,7 +64,7 @@ function normalizeAssets(assets: any[], root: string, sourceRoot: string): any[]
         );
       }
 
-      const assetPath = normalize(asset.input);
+      const assetPath = normalizePath(asset.input);
       const resolvedAssetPath = resolve(root, assetPath);
       return {
         ...asset,

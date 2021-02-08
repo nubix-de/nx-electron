@@ -1,5 +1,6 @@
 import { apply, chain, externalSchematic, mergeWith, move, noop, SchematicContext, template, Tree, url, Rule } from '@angular-devkit/schematics';
-import { join, normalize, Path } from '@angular-devkit/core';
+import { normalizePath } from '@nrwl/devkit';
+import { join, resolve, dirname, relative, basename } from 'path';
 import { Schema } from './schema';
 import { updateJsonInTree, updateWorkspaceInTree, generateProjectLint, addLintFiles } from '@nrwl/workspace';
 import { toFileName } from '@nrwl/workspace';
@@ -8,7 +9,7 @@ import { offsetFromRoot } from '@nrwl/workspace';
 import init from '../init/init';
 
 interface NormalizedSchema extends Schema {
-  appProjectRoot: Path;
+  appProjectRoot: string;
   parsedTags: string[];
 }
 
@@ -28,7 +29,7 @@ function getBuildConfig(project: any, options: NormalizedSchema) {
   return {
     builder: 'nx-electron:build',
     options: {
-      outputPath: join(normalize('dist'), options.appProjectRoot),
+      outputPath: join(normalizePath('dist'), options.appProjectRoot),
       main: join(project.sourceRoot, 'main.ts'),
       tsConfig: join(options.appProjectRoot, 'tsconfig.app.json'),
       assets: [join(project.sourceRoot, 'assets')]
@@ -97,8 +98,8 @@ function updateWorkspaceJson(options: NormalizedSchema): Rule {
     project.architect.package = getPackageConfig(options);
     project.architect.make = getMakeConfig(options);
     project.architect.lint = generateProjectLint(
-      normalize(project.root),
-      join(normalize(project.root), 'tsconfig.app.json'),
+      normalizePath(project.root),
+      join(normalizePath(project.root), 'tsconfig.app.json'),
       options.linter,
       [`${options.appProjectRoot}/**/*.ts`]
     );
@@ -197,7 +198,7 @@ function normalizeOptions(options: Schema): NormalizedSchema {
 
   const appProjectName = appDirectory.replace(new RegExp('/', 'g'), '-');
 
-  const appProjectRoot = join(normalize('apps'), appDirectory);
+  const appProjectRoot = join(normalizePath('apps'), appDirectory);
 
   const parsedTags = options.tags
     ? options.tags.split(',').map(s => s.trim())

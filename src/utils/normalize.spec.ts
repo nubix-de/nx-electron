@@ -1,13 +1,12 @@
 import { normalizeBuildOptions } from './normalize';
 import { BuildBuilderOptions } from './types';
-import { Path, normalize } from '@angular-devkit/core';
-
+import { normalizePath } from '@nrwl/devkit';
 import * as fs from 'fs';
 
 describe('normalizeBuildOptions', () => {
   let testOptions: BuildBuilderOptions;
   let root: string;
-  let sourceRoot: Path;
+  let sourceRoot: string;
 
   beforeEach(() => {
     testOptions = {
@@ -28,7 +27,7 @@ describe('normalizeBuildOptions', () => {
       statsJson: false
     };
     root = 'C:\\root';
-    sourceRoot = normalize('apps\\electronapp\\src');
+    sourceRoot = normalizePath('apps\\electronapp\\src');
   });
   it('should add the root', () => {
     const result = normalizeBuildOptions(testOptions, root, sourceRoot);

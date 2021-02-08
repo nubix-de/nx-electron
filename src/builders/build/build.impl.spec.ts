@@ -1,4 +1,5 @@
 import { normalize, JsonObject, workspaces } from '@angular-devkit/core';
+import { joinPathFragments, normalizePath } from '@nrwl/devkit';
 import { join, resolve } from 'path';
 jest.mock('tsconfig-paths-webpack-plugin');
 import TsConfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
@@ -33,7 +34,7 @@ describe('ElectronBuildBuilder', () => {
       ],
       assets: [],
       statsJson: false,
-      root: join(normalize(resolve(__dirname).replace(/build.*$/, '')), 'apps', 'electron-app', 'src')
+      root: join(normalizePath(resolve(__dirname).replace(/build.*$/, '')), 'apps', 'electron-app', 'src')
     };
     runWebpack = jest.fn().mockImplementation((config, context, options) => {
       options.logging({
